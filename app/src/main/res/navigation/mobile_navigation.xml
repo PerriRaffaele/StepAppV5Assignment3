@@ -22,4 +22,10 @@
         android:name="com.example.stepappv4.ui.Profile.ProfileFragment"
         android:label="@string/menu_profile"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_daily"
+        android:name="com.example.stepappv4.ui.Day.DayFragment"
+        android:label="@string/menu_daily"
+        tools:layout="@layout/fragment_day" />
 </navigation>

@@ -126,6 +126,36 @@ public class StepAppOpenHelper extends SQLiteOpenHelper {
         return map;
     }
 
+    public static Map<String, Integer> loadStepsByDateRange(Context context) {
+        Map<String, Integer> stepsByDate = new TreeMap<>();
+        StepAppOpenHelper databaseHelper = new StepAppOpenHelper(context);
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+
+        // Query to select dates and count steps grouped by date
+        String query = "SELECT " + KEY_DAY + ", COUNT(*) FROM " + TABLE_NAME + " GROUP BY " + KEY_DAY;
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                String date = cursor.getString(0);  // Get date
+                int steps = cursor.getInt(1);       // Get step count for that date
+                stepsByDate.put(date, steps);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        database.close();
+
+        // Log the step counts for each date for debugging purposes
+        for (Map.Entry<String, Integer> entry : stepsByDate.entrySet()) {
+            Log.d("STEPS FOR DATE: ", entry.getKey() + " = " + entry.getValue());
+        }
+
+        return stepsByDate;
+    }
+
+
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
