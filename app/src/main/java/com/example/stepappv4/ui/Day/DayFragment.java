@@ -21,6 +21,7 @@ import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.example.stepappv4.StepAppOpenHelper;
 import com.example.stepappv4.R;
+import com.example.stepappv4.databinding.FragmentDayBinding;
 import com.example.stepappv4.databinding.FragmentReportBinding;
 
 import java.text.SimpleDateFormat;
@@ -33,17 +34,17 @@ import java.util.TreeMap;
 public class DayFragment extends Fragment {
 
     private TextView stepsTextView;
-    private FragmentReportBinding binding;
+    private FragmentDayBinding binding;
     private AnyChartView anyChartView;
     private Map<String, Integer> stepsByDate;  // Map to hold steps by date
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentReportBinding.inflate(inflater, container, false);
+        binding = FragmentDayBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // Initialize AnyChartView and ProgressBar for loading
-        anyChartView = root.findViewById(R.id.hourBarChart);
+        anyChartView = root.findViewById(R.id.dayBarChart);
         anyChartView.setProgressBar(root.findViewById(R.id.loadingBar));
 
         // Generate and display the column chart
