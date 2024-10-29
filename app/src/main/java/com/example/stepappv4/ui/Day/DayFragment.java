@@ -60,11 +60,25 @@ public class DayFragment extends Fragment {
         // Retrieve steps by date for a range of dates
         stepsByDate = StepAppOpenHelper.loadStepsByDateRange(getContext());
 
-        // Initialize a map with a range of dates and set the step count to 0
+        // Create a TreeMap to hold all the days of the week with default step count of 0
         Map<String, Integer> graphMap = new TreeMap<>();
-        // Populate the graphMap with date keys and initial step values of 0, or use actual steps data if available
+
+        // Get the current date and calculate the start and end of the week
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Format should match your database
+        for (int i = 0; i < 7; i++) { // Iterate for the past week
+            Date date = new Date(currentDate.getTime() - (i * 24 * 60 * 60 * 1000)); // Subtract days
+            String formattedDate = dateFormat.format(date);
+            graphMap.put(formattedDate, 0); // Initialize with 0 steps
+        }
+
+        // Update the graphMap with actual steps data from the database
         if (stepsByDate != null) {
-            graphMap.putAll(stepsByDate);
+            for (Map.Entry<String, Integer> entry : stepsByDate.entrySet()) {
+                if (graphMap.containsKey(entry.getKey())) {
+                    graphMap.put(entry.getKey(), entry.getValue()); // Update the count if data exists
+                }
+            }
         }
 
         // Create a Cartesian chart for column chart
@@ -95,12 +109,23 @@ public class DayFragment extends Fragment {
         cartesian.interactivity().hoverMode(HoverMode.BY_X);
         cartesian.yScale().minimum(0);
         cartesian.yAxis(0).title("Number of Steps");
-        cartesian.xAxis(0).title("Date");  // Change x-axis title to "Date"
+        cartesian.xAxis(0).title("Date");
+
+        // Ensure all dates are displayed on the x-axis
+        cartesian.xAxis(0).labels().format("{%Value}"); // Display the date labels
+        cartesian.xAxis(0).labels().padding(10); // Adjust padding for visibility
+        cartesian.xAxis(0).ticks().enabled(true); // Enable ticks to separate dates
+
+        // Optional: Set the x-axis to fit all dates evenly
+        cartesian.xAxis(0).title().padding(10); // Adjust the title padding if needed
+
         cartesian.background().fill("#00000000");
         cartesian.animation(true);
 
         return cartesian;
     }
+
+
 
     @Override
     public void onDestroyView() {
